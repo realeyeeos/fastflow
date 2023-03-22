@@ -84,11 +84,12 @@ const (
 
 // DagInstance
 type DagInstance struct {
-	BaseInfo  `bson:"inline"`
-	DagID     string            `json:"dagId,omitempty" bson:"dagId,omitempty"`
-	Trigger   Trigger           `json:"trigger,omitempty" bson:"trigger,omitempty"`
-	Worker    string            `json:"worker,omitempty" bson:"worker,omitempty"`
-	Vars      DagInstanceVars   `json:"vars,omitempty" bson:"vars,omitempty"`
+	BaseInfo `bson:"inline"`
+	DagID    string  `json:"dagId,omitempty" bson:"dagId,omitempty"`
+	Trigger  Trigger `json:"trigger,omitempty" bson:"trigger,omitempty"`
+	Worker   string  `json:"worker,omitempty" bson:"worker,omitempty"`
+	//Vars      DagInstanceVars   `json:"vars,omitempty" bson:"vars,omitempty"`
+	Vars      DagInstanceVars   `json:"vars,omitempty" bson:"-"`
 	ShareData *ShareData        `json:"shareData,omitempty" bson:"shareData,omitempty"`
 	Status    DagInstanceStatus `json:"status,omitempty" bson:"status,omitempty"`
 	Reason    string            `json:"reason,omitempty" bson:"reason,omitempty"`
