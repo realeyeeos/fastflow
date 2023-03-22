@@ -36,7 +36,7 @@ type SpecifiedVar struct {
 }
 
 // Run used to build a new DagInstance, then you also need save it to Store
-func (d *Dag) Run(trigger Trigger, specVars map[string]string) (*DagInstance, error) {
+func (d *Dag) Run(trigger Trigger, specVars map[string]interface{}) (*DagInstance, error) {
 	if d.Status != DagStatusNormal {
 		return nil, fmt.Errorf("you cannot run a stopeed dag")
 	}
@@ -65,13 +65,13 @@ type DagVars map[string]DagVar
 
 // DagVar
 type DagVar struct {
-	Desc         string `yaml:"desc,omitempty" json:"desc,omitempty" bson:"desc,omitempty"`
-	DefaultValue string `yaml:"defaultValue,omitempty" json:"defaultValue,omitempty" bson:"defaultValue,omitempty"`
+	Desc         string      `yaml:"desc,omitempty" json:"desc,omitempty" bson:"desc,omitempty"`
+	DefaultValue interface{} `yaml:"defaultValue,omitempty" json:"defaultValue,omitempty" bson:"defaultValue,omitempty"`
 }
 
 // DagInstanceVar
 type DagInstanceVar struct {
-	Value string `json:"value,omitempty" bson:"value,omitempty"`
+	Value interface{} `json:"value,omitempty" bson:"value,omitempty"`
 }
 
 // DagStatus
@@ -283,7 +283,9 @@ func (dagIns *DagInstance) CanModifyStatus() bool {
 func (vars DagInstanceVars) Render(p map[string]interface{}) (map[string]interface{}, error) {
 	err := value.MapValue(p).WalkString(func(walkContext *value.WalkContext, s string) error {
 		for varKey, varValue := range vars {
-			s = strings.ReplaceAll(s, fmt.Sprintf("{{%s}}", varKey), varValue.Value)
+			if _, err := varValue.Value.(string); !err {
+				s = strings.ReplaceAll(s, fmt.Sprintf("{{%s}}", varKey), varValue.Value.(string))
+			}
 		}
 		walkContext.Setter(s)
 		return nil

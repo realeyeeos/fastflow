@@ -14,7 +14,7 @@ type DefCommander struct {
 }
 
 // RunDag
-func (c *DefCommander) RunDag(dagId string, specVars map[string]string) (*entity.DagInstance, error) {
+func (c *DefCommander) RunDag(dagId string, specVars map[string]interface{}) (*entity.DagInstance, error) {
 	dag, err := GetStore().GetDag(dagId)
 	if err != nil {
 		return nil, err

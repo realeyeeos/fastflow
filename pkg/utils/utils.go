@@ -12,7 +12,7 @@ func StringsContain(strs []string, str string) bool {
 
 type KeyValueGetter func(key string) (interface{}, bool)
 type KeyValueIterator func(KeyValueIterateFunc)
-type KeyValueIterateFunc func(key, val string) (stop bool)
+type KeyValueIterateFunc func(key string, value interface{}) (stop bool)
 
 const (
 	LogKeyDagInsID = "dagInsId"
