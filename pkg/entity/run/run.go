@@ -25,6 +25,7 @@ func NewDefExecuteContext(
 }
 
 // ExecuteContext is a context using by action
+//
 //go:generate mockery --name=ExecuteContext --output=. --inpackage  --filename=run_mock.go
 type ExecuteContext interface {
 	Context() context.Context
@@ -41,14 +42,15 @@ type ExecuteContext interface {
 	// e.g. Tracef("%d", 1, TraceOpPersistAfterAction)
 	// wrong case: Tracef("%d", TraceOpPersistAfterAction, 1)
 	Tracef(msg string, a ...interface{})
-	GetVar(varName string) (string, bool)
+	GetVar(varName string) (interface{}, bool)
 	IterateVars(iterateFunc utils.KeyValueIterateFunc)
 }
 
 // ShareDataOperator used to operate share data
 type ShareDataOperator interface {
-	Get(key string) (string, bool)
-	Set(key string, val string)
+	Get(key string) (interface{}, bool)
+	Set(key string, val interface{})
+	GetAll() map[string]interface{}
 }
 
 var _ ExecuteContext = &DefExecuteContext{}
@@ -58,7 +60,7 @@ type DefExecuteContext struct {
 	ctx          context.Context
 	op           ShareDataOperator
 	trace        func(msg string, opt ...TraceOp)
-	varsGetter   func(string) (string, bool)
+	varsGetter   func(string) (interface{}, bool)
 	varsIterator utils.KeyValueIterator
 }
 
@@ -115,7 +117,7 @@ func splitArgsAndOpt(a ...interface{}) ([]interface{}, []TraceOp) {
 }
 
 // GetVar used to get key from ShareData
-func (e *DefExecuteContext) GetVar(varName string) (string, bool) {
+func (e *DefExecuteContext) GetVar(varName string) (interface{}, bool) {
 	return e.varsGetter(varName)
 }
 
